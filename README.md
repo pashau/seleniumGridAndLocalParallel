@@ -1,5 +1,5 @@
 # SeleniumGridAndLocalParallel
-Selenium Prototype to run tests in parallel via grid or on local machine using Junit5
+Selenium Prototype to run tests in parallel via grid or on local machine using Junit5 (Unix)
 
 # reading material:
 - https://testingbot.com/support/getting-started/parallel-junit.html
