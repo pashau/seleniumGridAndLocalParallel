@@ -11,7 +11,9 @@ public class Login1_Test extends BaseTest {
 
     @Test
     @DisplayName("Successful Login Test")
-    public void testSuccessfulLogin() {
+    public void testSuccessfulLogin() throws InterruptedException {
+        // Delay added for parallel execution demonstration purposes
+        Thread.sleep(5000);
         var loginPage = new LoginPage(ThreadLocalDriverFactory.getDriver());
         var accountPage = new AccountPage(ThreadLocalDriverFactory.getDriver());
 

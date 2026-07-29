@@ -37,6 +37,17 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <!-- Diese Zeilen helfen Surefire, die Parallelisierung besser zu steuern -->
+                    <parallel>all</parallel>
+                    <threadCount>4</threadCount>
+                    <properties>
+                        <configurationParameters>
+                            junit.jupiter.execution.parallel.enabled=true
+                            junit.jupiter.execution.parallel.mode.default=concurrent
+                            junit.jupiter.execution.parallel.mode.classes.default=concurrent
+                            junit.jupiter.execution.parallel.config.strategy=dynamic
+                        </configurationParameters>
+                    </properties>
                 </configuration>
             </plugin>
         </plugins>
@@ -72,7 +83,7 @@
             <version>${selenium.version}</version>
         </dependency>
 
-        
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>

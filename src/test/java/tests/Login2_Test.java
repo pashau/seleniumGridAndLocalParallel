@@ -9,7 +9,9 @@ public class Login2_Test extends BaseTest {
 
     @Test
     @DisplayName("Invalid Login Test")
-    public void testInvalidLogin() {
+    public void testInvalidLogin() throws InterruptedException {
+        // Delay added for parallel execution demonstration purposes
+        Thread.sleep(5000);
         var loginPage = new LoginPage(ThreadLocalDriverFactory.getDriver());
 
         loginPage.login("locked_out_user", "secret_sauce");
