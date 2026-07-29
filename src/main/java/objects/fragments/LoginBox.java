@@ -1,8 +1,8 @@
 package objects.fragments;
 
-import objects.pages.CasPage;
+import objects.pages.LoginPage;
 import objects.pages.HomePage;
-import objects.pages.MySedoPage;
+import objects.pages.AccountPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -32,18 +32,18 @@ public class LoginBox extends HomePage {
 
 
     //*********Page Methods*********
-    public MySedoPage AndIloginSuccessful(String username, String password){
+    public AccountPage AndIloginSuccessful(String username, String password){
         writeText(usernameInput,username);
         writeText(passwordInput, password);
         click(loginButton);
-        return new PageFactory().initElements(driver, MySedoPage.class);
+        return new PageFactory().initElements(driver, AccountPage.class);
     }
 
-    public CasPage AndIloginUnsuccessful(String username, String password){
+    public LoginPage AndIloginUnsuccessful(String username, String password){
         writeText(usernameInput,username);
         writeText(passwordInput, password);
         click(loginButton);
-        return new PageFactory().initElements(driver, CasPage.class);
+        return new PageFactory().initElements(driver, LoginPage.class);
     }
 
     public HomePage AndICloseLoginBox(){

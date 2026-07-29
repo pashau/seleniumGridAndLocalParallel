@@ -1,36 +1,43 @@
 package helper;
 
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DriverOptionsManager {
-    static String workDir = System.getProperty("user.dir");
 
     //Get Chrome Options
     public static ChromeOptions getChromeOptions() {
-        ChromeOptions options = new ChromeOptions();
+        var options = new ChromeOptions();
+        
+        // 1. Grundlegende Argumente
         options.addArguments("--start-maximized");
         options.addArguments("--ignore-certificate-errors");
         options.addArguments("--disable-popup-blocking");
-        //options.addArguments("--incognito");
-        System.setProperty("webdriver.chrome.driver", workDir + "/chromedriver");
+        
+        // 2. Chrome Preferences (lösen das Password Manager & Leak Detection Problem)
+        Map<String, Object> prefs = new HashMap<>();
+        
+        // Deaktiviert die Warnung "Passwort in einer Datenpanne gefunden"
+        prefs.put("profile.password_manager_leak_detection", false); 
+        
+        // Deaktiviert den Standard-Chrome-Prompt "Passwort speichern?"
+        prefs.put("credentials_enable_service", false); 
+        
+        // Deaktiviert den Passwort-Manager komplett
+        prefs.put("profile.password_manager_enabled", false);
+        
+        options.setExperimentalOption("prefs", prefs);
+        
         return options;
     }
 
     //Get Firefox Options
-    public static FirefoxOptions getFirefoxOptions () {
-        FirefoxOptions options = new FirefoxOptions();
-        FirefoxProfile profile = new FirefoxProfile();
-        //Accept Untrusted Certificates
-        profile.setAcceptUntrustedCertificates(true);
-        profile.setAssumeUntrustedCertificateIssuer(false);
-        //Use No Proxy Settings
-        profile.setPreference("network.proxy.type", 0);
-        //Set Firefox profile to capabilities
-        options.setCapability(FirefoxDriver.PROFILE, profile);
-        System.setProperty("webdriver.gecko.driver", workDir + "/geckodriver");
+    public static FirefoxOptions getFirefoxOptions() {
+        var options = new FirefoxOptions();
+        options.addPreference("network.proxy.type", 0);
+        options.setAcceptInsecureCerts(true);
         return options;
     }
 }

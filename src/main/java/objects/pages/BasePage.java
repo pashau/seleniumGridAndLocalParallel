@@ -1,51 +1,57 @@
 package objects.pages;
 
 import helper.PageGenerator;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 import java.util.List;
 
 public class BasePage extends PageGenerator {
 
+    private final WebDriverWait wait;
+
     public BasePage(WebDriver driver) {
         super(driver);
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    //Click Method by using JAVA Generics (You can use both By or Webelement)
-    public <T> void click (T elementAttr) {
-        if(elementAttr.getClass().getName().contains("By")) {
-            driver.findElement((By) elementAttr).click();
-        } else {
-            ((WebElement) elementAttr).click();
-        }
+    // --- Click Methods ---
+    public void click(By locator) {
+        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
-    //Write Text by using JAVA Generics (You can use both By or Webelement)
-    public <T> void writeText (T elementAttr, String text) {
-        if(elementAttr.getClass().getName().contains("By")) {
-            driver.findElement((By) elementAttr).sendKeys(text);
-        } else {
-            ((WebElement) elementAttr).sendKeys(text);
-        }
+    public void click(WebElement element) {
+        wait.until(ExpectedConditions.elementToBeClickable(element)).click();
     }
 
-    //Read Text by using JAVA Generics (You can use both By or Webelement)
-    public <T> String readText (T elementAttr) {
-        if(elementAttr.getClass().getName().contains("By")) {
-            return driver.findElement((By) elementAttr).getText();
-        } else {
-            return ((WebElement) elementAttr).getText();
-        }
+    // --- Write Text Methods ---
+    public void writeText(By locator, String text) {
+        var element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        element.clear();
+        element.sendKeys(text);
     }
 
-    //Close popup if exists
-    public void handlePopup (By by) throws InterruptedException {
-        List<WebElement> popup = driver.findElements(by);
-        if(!popup.isEmpty()){
-            popup.get(0).click();
-            Thread.sleep(200);
+    public void writeText(WebElement element, String text) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+        element.clear();
+        element.sendKeys(text);
+    }
+
+    // --- Read Text Methods ---
+    public String readText(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
+    }
+
+    public String readText(WebElement element) {
+        return wait.until(ExpectedConditions.visibilityOf(element)).getText();
+    }
+
+    // Close popup if exists
+    public void handlePopup(By locator) {
+        var popups = driver.findElements(locator);
+        if (!popups.isEmpty()) {
+            popups.get(0).click();
         }
     }
 }

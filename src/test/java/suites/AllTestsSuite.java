@@ -1,14 +1,12 @@
 package suites;
 
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.ExcludeClassNamePatterns;
 import org.junit.platform.suite.api.SelectPackages;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
-//@SelectClasses({tests.Login1_Test.class, tests.Login2_Test.class})
+@Suite
 @SelectPackages("tests")
-@ExcludeClassNamePatterns({"^.*BaseTest?$"})
+@ExcludeClassNamePatterns({"^.*BaseTest?"})
 public class AllTestsSuite {
 
 }

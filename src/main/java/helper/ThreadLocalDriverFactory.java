@@ -11,35 +11,37 @@ import static helper.DriverOptionsManager.getFirefoxOptions;
 
 public class ThreadLocalDriverFactory {
 
-    private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
-    static Constants conf = Constants.instance();
+    private static final ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
+    private static final Constants conf = Constants.instance();
 
-    public synchronized static void setDriver(String browser) {
-        if(conf.IS_REMOTE){
-            // RemoteDriver
-            if (browser.equals("FIREFOX")) { try {
-                tlDriver.set(new RemoteWebDriver(new URL(conf.GRID_URL), getFirefoxOptions()));
-                    } catch (MalformedURLException e) { e.printStackTrace(); }
-            } else if (browser.equals("CHROME")) { try {
-                tlDriver.set(new RemoteWebDriver(new URL(conf.GRID_URL), getChromeOptions()));
-                    } catch (MalformedURLException e) { e.printStackTrace(); }
+    public static void setDriver(String browser) {
+        WebDriver driver;
+        if (conf.IS_REMOTE) {
+            try {
+                URL gridUrl = new URL(conf.GRID_URL);
+                driver = browser.equalsIgnoreCase("FIREFOX")
+                    ? new RemoteWebDriver(gridUrl, getFirefoxOptions())
+                    : new RemoteWebDriver(gridUrl, getChromeOptions());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Invalid Grid URL: " + conf.GRID_URL, e);
             }
         } else {
-            // LocalDriver
-            if (browser.equals("FIREFOX")) {
-                tlDriver = ThreadLocal.withInitial(() -> new FirefoxDriver(getFirefoxOptions()));
-            } else if (browser.equals("CHROME")) {
-                //tlDriver.set(new ChromeDriver(getChromeOptions()));
-                tlDriver = ThreadLocal.withInitial(() -> new ChromeDriver(getChromeOptions()));
-            }
+            driver = browser.equalsIgnoreCase("FIREFOX")
+                ? new FirefoxDriver(getFirefoxOptions())
+                : new ChromeDriver(getChromeOptions());
         }
+        tlDriver.set(driver);
     }
-
-    public synchronized static WebDriver getDriver() {
-        System.out.println("###DEBUG#T#TLDriverFactory#getDriver() 1");
+    public static WebDriver getDriver() {
         return tlDriver.get();
     }
 
+    public static void quitDriver() {
+        if (tlDriver.get() != null) {
+            tlDriver.get().quit();
+            tlDriver.remove();
+        }
+    }
 
 //    public  void setDriverAndWait(){
 //        setDriver(conf.BROWSER);
